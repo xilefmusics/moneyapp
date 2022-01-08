@@ -11,18 +11,22 @@ const cumulate = (pods, budgets, bookings, from, until, init) => {
     bookings
         .filter(booking => (booking.date.getTime() < until.getTime() && booking.date.getTime() >= from.getTime()))
         .forEach(booking => {
-            if (booking.from_pod !== 'world') { state.pod[booking.from_pod] -= booking.amount; }
-            if (booking.to_pod !== 'world') { state.pod[booking.to_pod] += booking.amount; };
-            if (booking.from_budget !== 'world') { state.budget[booking.from_budget] -= booking.amount; };
-            if (booking.to_budget !== 'world') { state.budget[booking.to_budget] += booking.amount; };
+            if (booking.from_pod !== 'world' && booking.from_pod !== '') { state.pod[booking.from_pod] -= booking.amount; }
+            if (booking.to_pod !== 'world' && booking.to_pod !== '') { state.pod[booking.to_pod] += booking.amount; };
+            if (booking.from_budget !== 'world' && booking.from_budget !== '') { state.budget[booking.from_budget] -= booking.amount; };
+            if (booking.to_budget !== 'world' && booking.to_budget !== '') { state.budget[booking.to_budget] += booking.amount; };
             if (booking.from_pod === 'world' 
                 && booking.from_budget === 'world'
                 && booking.to_pod !== 'world'
-                && booking.to_budget !== 'world') {state.incomming += booking.amount;};
+                && booking.to_budget !== 'world'
+                && booking.to_pod !== ''
+                && booking.to_budget !== '') {state.incomming += booking.amount;};
             if (booking.from_pod !== 'world' 
                 && booking.from_budget !== 'world'
                 && booking.to_pod === 'world'
-                && booking.to_budget === 'world') {state.outgoing += booking.amount;};
+                && booking.to_budget === 'world'
+                && booking.from_pod !== ''
+                && booking.from_budget !== '') {state.outgoing += booking.amount;};
     });
     return state;
 };
