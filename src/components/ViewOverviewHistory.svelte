@@ -39,6 +39,17 @@
                     <td>{(month.overview.insolvent / 100).toFixed(2)} €</td>
                     <td>{(month.overview.debt / 100).toFixed(2)} €</td>
                 </tr>
+                {#if month.lastYear}
+                    <td>{month.lastYear.year}</td>
+                    <td>{(month.lastYear.real_diff / 100).toFixed(2)} €</td>
+                    <td>{(month.lastYear.incomming / 100).toFixed(2)} €</td>
+                    <td>{(month.lastYear.outgoing / 100).toFixed(2)} €</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                {/if}
             {/each}
         </table>
     {/if}

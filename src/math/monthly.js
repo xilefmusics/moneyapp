@@ -1,7 +1,8 @@
 import cumulate from './cumulate';
-import cumulatePods from '../math/cumulatePods';
-import cumulateBudgets from '../math/cumulateBudgets';
-import calcDiff from '../math/calcDiff';
+import cumulatePods from './cumulatePods';
+import cumulateBudgets from './cumulateBudgets';
+import cumulateYear from './cumulateYear';
+import calcDiff from './calcDiff';
 
 const monthly = (pods, budgets, bookings, start) => {
     const today = new Date();
@@ -38,7 +39,9 @@ const monthly = (pods, budgets, bookings, start) => {
         },
         date: new Date(today.getTime()),
     });
-    return calcDiff(result);
+    result = calcDiff(result);
+    cumulateYear(result);
+    return result;
 };
 
 export default monthly;
