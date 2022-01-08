@@ -35,7 +35,7 @@
 		pods = await api.getPods();
     budgets = await api.getBudgets();
     bookings = await api.getBookings();
-    state.monthly = monthly(pods, budgets, bookings, new Date(2021, 9, 1));
+    state.monthly = monthly(pods, budgets, bookings, new Date(2018, 0, 1));
     state.head = state.monthly[state.monthly.length -1];
 	});
 
