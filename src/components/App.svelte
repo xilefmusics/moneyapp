@@ -16,7 +16,11 @@
   import monthly from '../math/monthly';
 
   let view = localStorage.getItem('url') ? "dashboard": "config";
-  const changeView = (v) => {view=v};
+  const changeView = (v) => {
+    view=v
+    document.body.scrollTop = 0;
+    document.body.scrollLeft = 0;
+  };
 
   let pods = [];
   let budgets = [];
