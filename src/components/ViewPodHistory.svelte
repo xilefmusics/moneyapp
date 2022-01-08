@@ -6,13 +6,15 @@
 
 <style>
     #main {
-        background-color: purple;
         flex-grow: 1;
+    }
+    h1 {
+        padding-left: 1em;
     }
 </style>
 
-<div id='main' class="div-fill">
-    <h1 on:click={() => changeView('dashboard')}>Pod History</h1>
+<div id='main' class="div-fill" on:click={() => changeView('dashboard')}>
+    <h1>Pod History</h1>
     {#if monthly && pods}
         <table>
             <tr>
@@ -23,9 +25,9 @@
             </tr>
             {#each monthly as month, idx}
                 <tr>
-                    <td>{`${month.date.getFullYear()}-${month.date.getMonth() + 1}-${month.date.getDate()}`}</td>
+                    <td>{`${("0" + month.date.getDate()).slice(-2)}.${("0" + (month.date.getMonth() + 1)).slice(-2)}.${month.date.getFullYear()}`}</td>
                     {#each pods as pod, pod_idx}
-                        <td>{month.pods[pod.name] / 100} €</td>
+                        <td>{(month.pods[pod.name] / 100).toFixed(2)} €</td>
                     {/each}
                 </tr>
             {/each}

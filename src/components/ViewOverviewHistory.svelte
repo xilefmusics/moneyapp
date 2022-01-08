@@ -5,33 +5,39 @@
 
 <style>
     #main {
-        background-color: purple;
         flex-grow: 1;
+    }
+    h1 {
+        padding-left: 1em;
     }
 </style>
 
-<div id='main' class="div-fill">
-    <h1 on:click={() => changeView('dashboard')}>Overview History</h1>
+<div id='main' on:click={() => changeView('dashboard')}>
+    <h1>Overview History</h1>
     {#if monthly}
         <table>
             <tr>
                 <th>Date</th>
+                <th>Change</th>
+                <th>In</th>
+                <th>Out</th>
                 <th>Real</th>
                 <th>Sum</th>
                 <th>Solvent</th>
                 <th>Insolvent</th>
                 <th>Debt</th>
-                <th>Change</th>
             </tr>
             {#each monthly as month, idx}
                 <tr>
-                    <td>{`${month.date.getFullYear()}-${month.date.getMonth() + 1}-${month.date.getDate()}`}</td>
-                    <td>{month.overview.real / 100} €</td>
-                    <td>{month.overview.sum / 100} €</td>
-                    <td>{month.overview.solvent / 100} €</td>
-                    <td>{month.overview.insolvent / 100} €</td>
-                    <td>{month.overview.debt / 100} €</td>
-                    <td>{month.overview.real_diff / 100} €</td>
+                    <td>{`${("0" + month.date.getDate()).slice(-2)}.${("0" + (month.date.getMonth() + 1)).slice(-2)}.${month.date.getFullYear()}`}</td>
+                    <td>{(month.overview.real_diff / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.incomming / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.outgoing / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.real / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.sum / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.solvent / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.insolvent / 100).toFixed(2)} €</td>
+                    <td>{(month.overview.debt / 100).toFixed(2)} €</td>
                 </tr>
             {/each}
         </table>
