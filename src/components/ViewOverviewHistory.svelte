@@ -1,6 +1,6 @@
 <script>
-    export let monthly;
     export let changeView;
+    export let data;
 </script>
 
 <style>
@@ -14,7 +14,7 @@
 
 <div id='main' on:click={() => changeView('dashboard')}>
     <h1>Overview History</h1>
-    {#if monthly}
+    {#if data}
         <table>
             <tr>
                 <th>Date</th>
@@ -27,29 +27,20 @@
                 <th>Insolvent</th>
                 <th>Debt</th>
             </tr>
-            {#each monthly as month, idx}
-                <tr>
-                    <td>{`${("0" + month.date.getDate()).slice(-2)}.${("0" + (month.date.getMonth() + 1)).slice(-2)}.${month.date.getFullYear()}`}</td>
-                    <td>{(month.overview.real_diff / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.incomming / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.outgoing / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.real / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.sum / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.solvent / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.insolvent / 100).toFixed(2)} €</td>
-                    <td>{(month.overview.debt / 100).toFixed(2)} €</td>
-                </tr>
-                {#if month.lastYear}
-                    <td>{month.lastYear.year}</td>
-                    <td>{(month.lastYear.real_diff / 100).toFixed(2)} €</td>
-                    <td>{(month.lastYear.incomming / 100).toFixed(2)} €</td>
-                    <td>{(month.lastYear.outgoing / 100).toFixed(2)} €</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                {/if}
+            {#each Object.entries(data) as [y, year]}
+                {#each Object.entries(year) as [m, month]}
+                    <tr>
+                        <td>{`${('0' + m).slice(-2)}.${y}`}</td>
+                        <td>{(month[0].pod_change_sums.real / 100).toFixed(2)} €</td>
+                        <td>{(month[0].income / 100).toFixed(2)} €</td>
+                        <td>{(month[0].outcome / 100).toFixed(2)} €</td>
+                        <td>{(month[0].pod_sums.real / 100).toFixed(2)} €</td>
+                        <td>{(month[0].pod_sums.sum / 100).toFixed(2)} €</td>
+                        <td>{(month[0].pod_sums.solvent / 100).toFixed(2)} €</td>
+                        <td>{(month[0].pod_sums.insolvent / 100).toFixed(2)} €</td>
+                        <td>{(month[0].pod_sums.debt / 100).toFixed(2)} €</td>
+                    </tr>
+                {/each}
             {/each}
         </table>
     {/if}

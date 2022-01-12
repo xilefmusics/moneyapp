@@ -13,7 +13,7 @@
   import { onMount } from 'svelte';
 
   import api from '../api';
-  import monthly from '../math/monthly';
+  import process_data from '../process_data';
 
   let view = localStorage.getItem('url') ? "dashboard": "config";
   const changeView = (v) => {
@@ -26,8 +26,8 @@
   let budgets = [];
   let bookings = [];
   let state = {
-    head: null,
-    monthly: null,
+    data: null,
+    head_data: null,
   };
 
 
@@ -35,8 +35,8 @@
 		pods = await api.getPods();
     budgets = await api.getBudgets();
     bookings = await api.getBookings();
-    state.monthly = monthly(pods, budgets, bookings, new Date(2018, 0, 1));
-    state.head = state.monthly[state.monthly.length -1];
+    state.data = process_data(pods, budgets, bookings);
+    state.head_data = state.data['2020']['12'][0];
 	});
 
 </script>
@@ -55,25 +55,25 @@
   <div id='main' class='div-fill'>
       {#if view === 'dashboard'}
         <ViewDashboard
-          state={state.head}
           changeView={changeView}
+          data={state.head_data}
         />
       {:else if view === 'overviewHistory'}
         <ViewOverviewHistory
-          monthly={state.monthly}
           changeView={changeView}
+          data={state.data}
         />
       {:else if view === 'podHistory'}
         <ViewPodHistory
-          monthly={state.monthly}
           changeView={changeView}
           pods={pods}
+          data={state.data}
         />
       {:else if view === 'budgetHistory'}
         <ViewBudgetHistory
-          monthly={state.monthly}
           changeView={changeView}
           budgets={budgets}
+          data={state.data}
         />
       {:else if view === 'pod'}
         <ViewPod />
@@ -86,8 +86,5 @@
       {:else}
         <ViewError />
       {/if}
-      <!--<BottomSlider
-        changeView={changeView}
-        />-->
   </div>
 </main>
