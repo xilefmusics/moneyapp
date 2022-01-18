@@ -36,7 +36,8 @@
     budgets = await api.getBudgets();
     bookings = await api.getBookings();
     state.data = process_data(pods, budgets, bookings);
-    state.head_data = state.data['2020']['12'][0];
+    const date = new Date();
+    state.head_data = state.data[date.getFullYear()][date.getMonth() + 1][0];
 	});
 
 </script>

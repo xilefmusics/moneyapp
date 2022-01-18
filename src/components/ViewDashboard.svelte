@@ -39,7 +39,7 @@
           {/each}
           <tr class='upper-line'>
             <td class='left no-pad'>Sum</td>
-            <td class='right bold no-pad'>{("TODO" / 100).toFixed(2)} €</td>
+            <td class='right bold no-pad'>{( data.budget_sum / 100).toFixed(2)} €</td>
           </tr>
         </table>
       </div>

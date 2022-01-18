@@ -34,8 +34,8 @@ const accumulateChanges = (bookings, pods, budgets) => {
     bookings.forEach(booking => {
         if (booking.from_pod !== 'world' && booking.from_pod !== 'fake') { pod_changes[booking.from_pod] -= booking.amount; }
         if (booking.to_pod !== 'world' && booking.to_pod !== 'fake') { pod_changes[booking.to_pod] += booking.amount; };
-        if (booking.from_budget !== 'world' && booking.from_budget !== 'fake') { pod_changes[booking.from_budget] -= booking.amount; };
-        if (booking.to_budget !== 'world' && booking.to_budget !== 'fake') { pod_changes[booking.to_budget] += booking.amount; };
+        if (booking.from_budget !== 'world' && booking.from_budget !== 'fake') { budget_changes[booking.from_budget] -= booking.amount; };
+        if (booking.to_budget !== 'world' && booking.to_budget !== 'fake') { budget_changes[booking.to_budget] += booking.amount; };
         if (booking.from_pod === 'world' 
                 && booking.from_budget === 'world'
                 && booking.to_pod !== 'world'
@@ -85,6 +85,26 @@ const sumPods = (monthPods, pods) => {
     };
 };
 
+const add_next_month = (months) => {
+    const date = new Date();
+    if (date.getDate() !== 1) {
+        return months;
+    }
+
+    // TODO generate month
+    const cmonth = months[-1];
+    const nmonth = {
+        ...cmonth,
+    }
+
+    return [...months, nmonth];
+};
+
+const addBudgetSum = month => {
+    const budget_sum = Object.entries(month.budget).map(budget => budget[1]).reduce((a, b) => a + b);
+    return {...month, budget_sum};
+};
+
 const process_data = (pods, budgets, bookings) => {
     const bookingsMapped = bookings.map(booking => ({...booking, date: mapDate(new Date(booking.date))}));
     const monthsWithChanges = Object.values(classify(bookingsMapped, booking => booking.date.year))
@@ -100,7 +120,11 @@ const process_data = (pods, budgets, bookings) => {
         pod_change_sums: sumPods(month.pod_changes, pods),
     }));
 
-    const years = arrayToObject(Object.values(classify(monthWithOverview, month => month.bookings[0].date.year))
+    const monthWithCurrent = add_next_month(monthWithOverview)
+
+    const monthWithBudgetSum = monthWithCurrent.map(month => addBudgetSum(month));
+
+    const years = arrayToObject(Object.values(classify(monthWithBudgetSum, month => month.bookings[0].date.year))
         .map(year => classify(year, month => month.bookings[0].date.month))
         .map(year => [Object.values(year)[0][0].bookings[0].date.year, year]));
 
