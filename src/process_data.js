@@ -70,7 +70,7 @@ const cumulativeSumOfChange = (bookings) => {
 };
 
 const sumPods = (monthPods, pods) => {
-    const acc = type => pods.filter(pod => pod.type == type).map(pod => monthPods[pod.name]).reduce((a, b) => a + b);
+    const acc = type => pods.filter(pod => pod.type == type).map(pod => monthPods[pod.name]).reduce((a, b) => a + b, 0);
     const solvent = acc('solvent');
     const insolvent = acc('insolvent');
     const debt = acc('debt');
