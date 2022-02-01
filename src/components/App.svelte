@@ -37,7 +37,7 @@
     bookings = await api.getBookings();
     state.data = process_data(pods, budgets, bookings);
     const date = new Date();
-    state.head_data = state.data[date.getFullYear()][date.getMonth() + 1][0];
+    state.head_data = state.data[date.getFullYear()][date.getMonth() + 1];
 	});
 
 </script>

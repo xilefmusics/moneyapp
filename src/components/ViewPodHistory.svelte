@@ -28,7 +28,7 @@
                     <tr>
                         <td>{`${('0' + m).slice(-2)}.${y}`}</td>
                         {#each pods as pod}
-                            <td>{(month[0].pod[pod.name] / 100).toFixed(2)} €</td>
+                            <td>{(month.pod[pod.name] / 100).toFixed(2)} €</td>
                         {/each}
                     </tr>
                 {/each}

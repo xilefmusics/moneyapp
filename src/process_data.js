@@ -1,3 +1,5 @@
+// helpers
+
 const mapDate = date => ({
     year: date.getFullYear(), 
     month: date.getMonth() + 1
@@ -24,6 +26,8 @@ const arrayToObject = (array) => {
 };
 
 const addObjects = (o1, o2) => arrayToObject(Object.keys(o1).map(key => [key, o1[key] + o2[key]]));
+
+// functions
 
 const accumulateChanges = (bookings, pods, budgets) => {
     const pod_changes = arrayToObject(pods.map(pod => [pod.name, 0]));
@@ -85,57 +89,49 @@ const sumPods = (monthPods, pods) => {
     };
 };
 
-const add_next_month = (months) => {
-    const date = new Date();
-    if (date.getDate() !== 1) {
-        return months;
-    }
-
-    // TODO generate month
-    const cmonth = months[-1];
-    const nmonth = {
-        ...cmonth,
-    }
-
-    return [...months, nmonth];
-};
-
 const addBudgetSum = month => {
     const budget_sum = Object.entries(month.budget).map(budget => budget[1]).reduce((a, b) => a + b);
     return {...month, budget_sum};
 };
 
-const process_data = (pods, budgets, bookings) => {
-    const bookingsMapped = bookings.map(booking => ({...booking, date: mapDate(new Date(booking.date))}));
-    const monthsWithChanges = Object.values(classify(bookingsMapped, booking => booking.date.year))
-        .map(bookings => Object.values(classify(bookings, booking => booking.date.month)))
-        .map(bookings => bookings.map(bookings => ({
-            ...accumulateChanges(bookings, pods, budgets),
-            bookings,
-        }))).flat();
-    const monthsWithCurrent = cumulativeSumOfChange(monthsWithChanges);
-    const monthWithOverview = monthsWithCurrent.map(month => ({
+// parts
+
+const accumulateToMonths = (bookings, pods, budgets) => {
+    const bookingsWithDate = bookings.map(booking => ({...booking, date: mapDate(new Date(booking.date))}));
+    const twoDimBookings = Object.values(classify(bookingsWithDate, booking => booking.date.year));
+    const threeDimBookings = twoDimBookings.map(bookings => Object.values(classify(bookings, booking => booking.date.month)));
+    const accumumulatedBookings = threeDimBookings.map(bookings => bookings.map(bookings => ({...accumulateChanges(bookings, pods, budgets),bookings})));
+    return accumumulatedBookings.flat();
+};
+
+const calcMonthValues = (months, pods) => {
+    const m1 = cumulativeSumOfChange(months);
+    const m2 = m1.map(month => ({
         ...month,
         pod_sums: sumPods(month.pod, pods),
         pod_change_sums: sumPods(month.pod_changes, pods),
     }));
+    return m2.map(month => addBudgetSum(month));
+};
 
-    const monthWithCurrent = add_next_month(monthWithOverview)
+const monthsToYearObject = months => {
+    const y1 = Object.values(classify(months, month => month.bookings[0].date.year));
+    const y2 = y1.map(year => arrayToObject(year.map(month => [month.bookings[0].date.month, month])));
+    const y3 = arrayToObject(y2.map(year => [Object.values(year)[0].bookings[0].date.year, year]));
+    return y3;
+};
 
-    const monthWithBudgetSum = monthWithCurrent.map(month => addBudgetSum(month));
-
-    const years = arrayToObject(Object.values(classify(monthWithBudgetSum, month => month.bookings[0].date.year))
-        .map(year => classify(year, month => month.bookings[0].date.month))
-        .map(year => [Object.values(year)[0][0].bookings[0].date.year, year]));
-
-        return years;
+const process_data = (pods, budgets, bookings) => {
+    const months = calcMonthValues(accumulateToMonths(bookings, pods, budgets), pods);
+    const years = monthsToYearObject(months);
+    return years;
 };
 
 const test = () => {
     const data = require('./data.json');
     const {pods, budgets, bookings} = data;
-    console.log(process_data(pods, budgets, bookings)[2020][6]);
+    process_data(pods, budgets, bookings);
 };
+// test();
 
-//test();
 export default process_data;

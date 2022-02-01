@@ -28,7 +28,7 @@
                     <tr>
                         <td>{`${('0' + m).slice(-2)}.${y}`}</td>
                         {#each budgets as budget}
-                            <td>{(month[0].budget[budget.name] / 100).toFixed(2)} €</td>
+                            <td>{(month.budget[budget.name] / 100).toFixed(2)} €</td>
                         {/each}
                     </tr>
                 {/each}

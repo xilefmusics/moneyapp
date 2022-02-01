@@ -31,14 +31,14 @@
                 {#each Object.entries(year) as [m, month]}
                     <tr>
                         <td>{`${('0' + m).slice(-2)}.${y}`}</td>
-                        <td>{(month[0].pod_change_sums.real / 100).toFixed(2)} €</td>
-                        <td>{(month[0].income / 100).toFixed(2)} €</td>
-                        <td>{(month[0].outcome / 100).toFixed(2)} €</td>
-                        <td>{(month[0].pod_sums.real / 100).toFixed(2)} €</td>
-                        <td>{(month[0].pod_sums.sum / 100).toFixed(2)} €</td>
-                        <td>{(month[0].pod_sums.solvent / 100).toFixed(2)} €</td>
-                        <td>{(month[0].pod_sums.insolvent / 100).toFixed(2)} €</td>
-                        <td>{(month[0].pod_sums.debt / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_change_sums.real / 100).toFixed(2)} €</td>
+                        <td>{(month.income / 100).toFixed(2)} €</td>
+                        <td>{(month.outcome / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_sums.real / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_sums.sum / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_sums.solvent / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_sums.insolvent / 100).toFixed(2)} €</td>
+                        <td>{(month.pod_sums.debt / 100).toFixed(2)} €</td>
                     </tr>
                 {/each}
             {/each}
