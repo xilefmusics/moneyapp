@@ -115,6 +115,13 @@ const addBudgetSum = month => {
     return {...month, budget_sum};
 };
 
+const yearCumulations = year => {
+    const income = Object.values(year.months).map(month => month.income).reduce((a, b) => a + b, 0);
+    const outcome = Object.values(year.months).map(month => month.outcome).reduce((a, b) => a + b, 0);
+    const real_change = Object.values(year.months).map(month => month.pod_change_sums.real).reduce((a, b) => a + b, 0);
+    return {...year, income, outcome, real_change};
+};
+
 // parts
 
 const accumulateToMonths = (bookings, pods, budgets) => {
@@ -138,13 +145,15 @@ const calcMonthValues = (months, pods) => {
 const monthsToYearObject = months => {
     const y1 = Object.values(classify(months, month => month.bookings[0].date.year));
     const y2 = y1.map(year => arrayToObject(year.map(month => [month.bookings[0].date.month, month])));
-    const y3 = arrayToObject(y2.map(year => [Object.values(year)[0].bookings[0].date.year, year]));
+    const y3 = arrayToObject(y2.map(months => [Object.values(months)[0].bookings[0].date.year, {months}]));
     return y3;
 };
 
+const calcYearValues = years => arrayToObject(Object.entries(years).map(year => [year[0], yearCumulations(year[1])]));
+
 const process_data = (pods, budgets, bookings) => {
     const months = calcMonthValues(accumulateToMonths(bookings, pods, budgets), pods);
-    const years = monthsToYearObject(months);
+    const years = calcYearValues(monthsToYearObject(months));
     return years;
 };
 

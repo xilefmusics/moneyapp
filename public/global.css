@@ -44,6 +44,10 @@ td {
   border-top: 1pt solid #EEEEEE;
 }
 
+.under-line {
+  border-bottom: 1pt solid #EEEEEE;
+}
+
 .bold {
   font-weight: bold;
 }

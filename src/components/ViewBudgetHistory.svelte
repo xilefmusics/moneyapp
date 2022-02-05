@@ -24,7 +24,7 @@
                 {/each}
             </tr>
             {#each Object.entries(data) as [y, year]}
-                {#each Object.entries(year) as [m, month]}
+                {#each Object.entries(year.months) as [m, month]}
                     <tr>
                         <td>{`${('0' + m).slice(-2)}.${y}`}</td>
                         {#each budgets as budget}
