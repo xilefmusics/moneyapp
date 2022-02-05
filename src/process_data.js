@@ -30,6 +30,11 @@ const addObjects = (o1, o2) => arrayToObject(Object.keys(o1).map(key => [key, o1
 // functions
 
 const accumulateChanges = (bookings, pods, budgets) => {
+    const is_debt = pod_name => {
+        const pod = pods.find(pod => pod.name === pod_name);
+        return pod !== undefined && pod.type === 'debt';
+    };
+
     const pod_changes = arrayToObject(pods.map(pod => [pod.name, 0]));
     const budget_changes = arrayToObject(budgets.map(budget => [budget.name, 0]));
     let income = 0;
@@ -41,13 +46,29 @@ const accumulateChanges = (bookings, pods, budgets) => {
         if (booking.from_budget !== 'world' && booking.from_budget !== 'fake') { budget_changes[booking.from_budget] -= booking.amount; };
         if (booking.to_budget !== 'world' && booking.to_budget !== 'fake') { budget_changes[booking.to_budget] += booking.amount; };
         if (booking.from_pod === 'world' 
-                && booking.from_budget === 'world'
-                && booking.to_pod !== 'world'
-                && booking.to_budget !== 'world') {income += booking.amount;};
-            if (booking.from_pod !== 'world' 
-                && booking.from_budget !== 'world'
-                && booking.to_pod === 'world'
-                && booking.to_budget === 'world') {outcome += booking.amount;};
+            && booking.from_budget === 'world'
+            && booking.to_pod !== 'world'
+            && booking.to_budget !== 'world') {
+                if (is_debt(booking.to_pod)) {
+                    income -= booking.amount;
+                } else {
+                    income += booking.amount;
+                }
+            };  
+        if (booking.from_pod !== 'world' 
+            && booking.from_budget !== 'world'
+            && booking.to_pod === 'world'
+            && booking.to_budget === 'world') {
+                if (is_debt(booking.from_pod)) {
+                    outcome -= booking.amount;
+                } else {
+                    outcome += booking.amount;
+                }
+        };
+        if (booking.from_pod === 'amortizing' && booking.from_budget === 'amortizing') {
+            outcome -= booking.amount; 
+        };
+
     });
 
     return {pod_changes, budget_changes, income, outcome};
