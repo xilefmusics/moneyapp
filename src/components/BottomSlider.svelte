@@ -1,30 +1,41 @@
 <script>
     export let changeView;
+    export let view;
 </script>
   
 <style>
     #main {
-        background-color: blue;
         display: flex;
+        background-color: #303030;
     }
     .item {
-        border-left: solid;
         flex: 1;
         text-align: center;
+        font-weight: bold;
+        font-size: 3em;
+    }
+    .selected {
+        color: #DDDDDD;
+    }
+    .not-selected {
+        color: #AAAAAA;
     }
 </style>
 
 <div id='main'>
-    <div class='item'
+    <div class={`item ${view === 'dashboard' ? 'selected' : 'not-selected'}`}
         on:click={() => changeView('dashboard')}
-    >Dashboard</div>
-    <div class='item'
+    >D</div>
+    <div class={`item ${view === 'pod' ? 'selected' : 'not-selected'}`}
         on:click={() => changeView('pod')}
-    >Pod</div>
-    <div class='item'
+    >P</div>
+    <div class={`item ${view === 'addBooking' ? 'selected' : 'not-selected'}`}
+        on:click={() => changeView('addBooking')}
+    >+</div>
+    <div class={`item ${view === 'budget' ? 'selected' : 'not-selected'}`}
         on:click={() => changeView('budget')}
-    >Budget</div>
-    <div class='item'
-        on:click={() => changeView('booking')}
-    >Booking</div>
+    >B</div>
+    <div class={`item ${view === 'config' ? 'selected' : 'not-selected'}`}
+        on:click={() => changeView('config')}
+    >C</div>
 </div>

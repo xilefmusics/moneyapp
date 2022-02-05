@@ -10,8 +10,12 @@
 </style>
 
 <div id='main' class="div-fill div-scroll">
+    <h1>Config</h1>
+    <h2>URL</h2>
     <input type="text" id='config-url'>
+    <h2>User</h2>
     <input type="text" id='config-user'>
+    <h2>Password</h2>
     <input type="text" id='config-password'>
     <button on:click={doConfig}>config</button>
 </div>

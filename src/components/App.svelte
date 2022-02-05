@@ -5,6 +5,7 @@
   import ViewBudgetHistory from './ViewBudgetHistory.svelte';
   import ViewPod from './ViewPod.svelte';
   import ViewBooking from './ViewBooking.svelte';
+  import ViewAddBooking from './ViewAddBooking.svelte';
   import ViewBudget from './ViewBudget.svelte';
   import ViewError from './ViewError.svelte';
   import BottomSlider from './BottomSlider.svelte';
@@ -44,16 +45,25 @@
 
 <style>
   #main {
+    position: fixed;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: stretch;
   }
+  #view-wrapper {
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
 </style>
 
 <main>
-  <div id='main' class='div-fill'>
+  <div id='main'>
+    <div id='view-wrapper'>
       {#if view === 'dashboard'}
         <ViewDashboard
           changeView={changeView}
@@ -82,10 +92,17 @@
         <ViewBudget />
       {:else if view === 'booking'}
         <ViewBooking />
+      {:else if view === 'addBooking'}
+        <ViewAddBooking />
       {:else if view === 'config'}
         <ViewConfig />
       {:else}
         <ViewError />
       {/if}
+    </div>
+    <BottomSlider 
+      changeView={changeView}
+      view={view}
+    />
   </div>
 </main>

@@ -9,5 +9,5 @@
 </style>
 
 <div id='main' class="div-fill">
-    <h1>Budget</h1>
+    <h1>Add Booking</h1>
 </div>

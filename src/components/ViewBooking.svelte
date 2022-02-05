@@ -4,7 +4,6 @@
 
 <style>
     #main {
-        background-color: orange;
         flex-grow: 1;
     }
 </style>
