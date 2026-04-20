@@ -37,7 +37,7 @@ pub struct Barclays {
     possible_payments: String,
     #[serde(rename = "Land")]
     country: String,
-    #[serde(rename = "Name des Karteninhabers")]
+    #[serde(rename = "Karteninhaber")]
     card_holder: String,
     #[serde(rename = "Kartennetzwerk")]
     card_network: String,
@@ -126,22 +126,25 @@ mod tests {
     #[test]
     fn test_parse_transactions() {
         let input = "
-,,,,,,,,,,,,,
-Transaktionsansicht,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-Kontonummer,123456,,,,,,,,,,,,
-IBAN,DE123456,,,,,,,,,,,,
-Kontoname,Barclays Visa,,,,,,,,,,,,
-Kontotyp,Kreditkarte,,,,,,,,,,,,
-Kreditrahmen,\"1.2345,00\",,,,,,,,,,,,
-Verfügungsrahmen,\"1.000,00\",,,,,,,,,,,,
-Status,Aktiv,,,,,,,,,,,,
-Stand,23 Dez 23,,,,,,,,,,,,
-,,,,,,,,,,,,,
-Referenznummer,Buchungsdatum,Buchungsdatum,Betrag,Beschreibung,Typ,Status,Kartennummer,Originalbetrag,Mögliche Zahlpläne,Land,Name des Karteninhabers,Kartennetzwerk,Kontaktlose Bezahlung
-123456,01.12.2023,,\"+1,23 €\",Transaction 1,Überweisung,vorgemerkt,9876,\"+1,23 €\",Nein,DE,Name,Visa,Ja
-123457,02.12.2023,03.12.2023,\"-1,23 €\",Transaction2,Belastung,noch nicht abgerechnet,5432,\"-1,23 €\",Nein,DE,Name,Visa,Nein
+,,,,,,,,,,,,,,
+Transaktionsansicht,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Kontonummer,123456,,,,,,,,,,,,,
+IBAN,DE00000000000000000000,,,,,,,,,,,,,
+Kontoname,Example Visa,,,,,,,,,,,,,
+Kontotyp,Kreditkarte,,,,,,,,,,,,,
+Kreditrahmen,\"1.234,56\",,,,,,,,,,,,,
+Verfügungsrahmen,\"1.000,00\",,,,,,,,,,,,,
+Status,Aktiv,,,,,,,,,,,,,
+Stand,23 Dez 23,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+Referenznummer,Buchungsdatum,Buchungsdatum,Betrag,Beschreibung,Typ,Status,Kartennummer,Originalbetrag,Mögliche Zahlpläne,Land,Karteninhaber,Kartennetzwerk,Kontaktlose Bezahlung,Details
+123456,01.12.2023,,\"+1,23 €\",Transaction 1,Überweisung,vorgemerkt,9876,\"+1,23 €\",Nein,DE,Holder Name,Visa,Ja,
+123457,02.12.2023,03.12.2023,\"-1,23 €\",Transaction2,Belastung,noch nicht abgerechnet,5432,\"-1,23 €\",Nein,DE,Holder Name,Visa,Nein,
 ";
-        println!("{:?}", Barclays::parse_transactions(input).unwrap());
+        let txs = Barclays::parse_transactions(input).unwrap();
+        assert_eq!(txs.len(), 2);
+        assert_eq!(txs[0].amount, 123);
+        assert_eq!(txs[1].amount, 123);
     }
 }
