@@ -1,4 +1,4 @@
-FROM bitnami/git:2.43.0-debian-11-r4 as DependencyDownloader
+FROM alpine/git:v2.52.0 AS dependency_downloader
 
 WORKDIR /fancy_surreal
 RUN git clone --depth 1 --branch 0.1.4 https://github.com/xilefmusics/fancy_surreal.git .
@@ -7,13 +7,15 @@ WORKDIR /fancy_yew
 RUN git clone --depth 1 --branch 0.5.0 https://github.com/xilefmusics/fancy_yew.git .
 
 
-FROM rust:1.79-bookworm as Builder
+FROM rust:1.95-bookworm AS builder
 
-RUN cargo install --locked trunk && \
+RUN export CARGO_BUILD_JOBS=$(nproc) && \
+    cargo install cargo-binstall && \
+    cargo binstall trunk --version 0.21.14 --no-confirm && \
     rustup target add wasm32-unknown-unknown
 
-COPY --from=DependencyDownloader /fancy_surreal /fancy_surreal
-COPY --from=DependencyDownloader /fancy_yew /fancy_yew
+COPY --from=dependency_downloader /fancy_surreal /fancy_surreal
+COPY --from=dependency_downloader /fancy_yew /fancy_yew
 
 WORKDIR /money_app
 COPY ./shared ./shared

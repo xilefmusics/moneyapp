@@ -41,7 +41,14 @@ More detailed information can be found in the [Dockerfile](https://github.com/xi
 Once all dependencies have been installed, the four components can be started using the following four commands:
 
 ``` bash
-surreal start --log debug --user root --pass root memory --allow-scripting
+docker run --rm -p 8000:8000 \
+  surrealdb/surrealdb:v1.5.6 \
+  start \
+    --log debug \
+    --user root \
+    --pass root \
+    memory \
+    --allow-scripting
 cd backend && cargo watch -cqx run
 cd frontend && trunk serve
 CONFIG_FILE="./proxauth-config.yaml" proxauth

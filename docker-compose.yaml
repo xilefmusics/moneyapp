@@ -4,7 +4,9 @@ services:
     image: surrealdb/surrealdb:1.0.0
     command: start --log debug --user root --pass root memory --allow-scripting
   backend:
-    image: xilefmusics/money-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
   proxauth:
     image: xilefmusics/proxauth:0.1.0
     environment:
