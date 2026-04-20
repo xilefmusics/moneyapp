@@ -1,11 +1,14 @@
 use super::DateIterator;
 
-use crate::contract::{Contract, ContractModel};
-use crate::goal::{Goal, GoalData, GoalModel};
+use crate::database::Database;
+use crate::error::AppError;
 use crate::history::{History, QueryParams};
-use crate::AppError;
-use fancy_surreal::Client;
-pub use money_app_shared::extrapolation::{Extrapolation, ExtrapolationItem};
+use crate::resources::contract::store::ContractStore;
+use crate::resources::goal::store::GoalStore;
+
+use money_app_shared::contract::Contract;
+use money_app_shared::extrapolation::{Extrapolation, ExtrapolationItem};
+use money_app_shared::goal::{Goal, GoalData};
 use money_app_shared::history::Wealth;
 
 use chrono::Datelike;
@@ -80,13 +83,13 @@ pub fn create_extrapolation_pure(
 }
 
 pub async fn create_extrapolation(
-    db: Arc<Client<'_>>,
+    db: Arc<Database>,
     user: &str,
     year: i32,
     month: u32,
 ) -> Result<Extrapolation, AppError> {
-    let contracts = ContractModel::get(db.clone(), user).await?;
-    let goals = GoalModel::get(db.clone(), user).await?;
+    let contracts = ContractStore::list(db.clone(), user).await?;
+    let goals = GoalStore::list(db.clone(), user).await?;
     let wealth = History::wealth(
         db.clone(),
         user,
@@ -101,11 +104,18 @@ pub async fn create_extrapolation(
     )
     .await?;
 
+    if wealth.len() < 2 {
+        return Err(AppError::invalid_request(
+            "not enough history for extrapolation (need at least 2 wealth points)",
+        ));
+    }
+
+    let n = wealth.len();
     Ok(create_extrapolation_pure(
         &contracts,
         &goals,
-        &wealth[..(wealth.len() - 2)],
-        &wealth[wealth.len() - 2],
+        &wealth[..(n - 2)],
+        &wealth[n - 2],
         year,
         month,
     ))

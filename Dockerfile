@@ -1,26 +1,21 @@
 FROM alpine/git:v2.52.0 AS dependency_downloader
 
-WORKDIR /fancy_surreal
-RUN git clone --depth 1 --branch 0.1.4 https://github.com/xilefmusics/fancy_surreal.git .
-
 WORKDIR /fancy_yew
 RUN git clone --depth 1 --branch 0.5.0 https://github.com/xilefmusics/fancy_yew.git .
 
 
-FROM rust:1.95-bookworm AS builder
+FROM rust:bookworm AS builder
 
-RUN export CARGO_BUILD_JOBS=$(nproc) && \
-    cargo install cargo-binstall && \
-    cargo binstall trunk --version 0.21.14 --no-confirm && \
-    rustup target add wasm32-unknown-unknown
+RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && rustup target add wasm32-unknown-unknown \
+    && cargo install cargo-binstall \
+    && cargo binstall trunk --version 0.21.14 --no-confirm
 
-COPY --from=dependency_downloader /fancy_surreal /fancy_surreal
 COPY --from=dependency_downloader /fancy_yew /fancy_yew
 
 WORKDIR /money_app
 COPY ./shared ./shared
-
-WORKDIR /money_app
 COPY ./backend ./backend
 WORKDIR /money_app/backend
 RUN cargo build --release
@@ -30,21 +25,25 @@ COPY ./frontend ./frontend
 WORKDIR /money_app/frontend
 RUN trunk build --release
 
-FROM ubuntu:24.04
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /money_app/frontend/dist/ /app/static
-COPY --from=builder /money_app/backend/target/release/backend /app/worship_viewer
+COPY --from=builder /money_app/backend/target/release/backend /app/backend
+COPY ./backend/db-migrations /app/db-migrations
 
-ENV PORT="8000" \
-    DB_HOST="db" \
-    DB_PORT="8000" \
-    DB_USER="root" \
-    DB_PASSWORD="root" \
-    DB_NAMESPACE="test" \
-    DB_DATABASE="test" \
+ENV HOST="0.0.0.0" \
+    PORT="8080" \
     STATIC_DIR="/app/static" \
-    ATTACHMENT_DIR="/app/attachments"
+    ATTACHMENT_DIR="/app/attachments" \
+    DB_MIGRATION_PATH="/app/db-migrations" \
+    DB_ADDRESS="http://127.0.0.1:8000" \
+    DB_NAMESPACE="moneyapp" \
+    DB_DATABASE="moneyapp"
 
 VOLUME "/app/attachments"
 
-ENTRYPOINT ["/app/worship_viewer"]
+ENTRYPOINT ["/app/backend"]

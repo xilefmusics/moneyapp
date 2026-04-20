@@ -55,7 +55,7 @@ pub fn GoalPage(props: &Props) -> Html {
         let due = due.clone();
         let goal_type = goal_type.clone();
         let amount = amount.clone();
-        let query = format!("/api/goals/{}", props.id);
+        let query = format!("/api/v1/goals/{}", props.id);
         use_effect_with((), move |_| {
             let id = id.clone();
             let due = due.clone();
@@ -88,7 +88,7 @@ pub fn GoalPage(props: &Props) -> Html {
                 *amount,
             )];
             wasm_bindgen_futures::spawn_local(async move {
-                let _: Vec<Goal> = Request::put("/api/goals")
+                let _: Vec<Goal> = Request::put("/api/v1/goals")
                     .json(&goals)
                     .unwrap()
                     .send()

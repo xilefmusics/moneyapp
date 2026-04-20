@@ -162,7 +162,7 @@ pub fn ContractPage(props: &Props) -> Html {
         let payment_pod = payment_pod.clone();
         let payment_debts = payment_debts.clone();
         let attachments = attachments.clone();
-        let query = format!("/api/contracts/{}", props.id);
+        let query = format!("/api/v1/contracts/{}", props.id);
         use_effect_with((), move |_| {
             wasm_bindgen_futures::spawn_local(async move {
                 let fetched_contract: Contract = Request::get(&query)
@@ -191,7 +191,7 @@ pub fn ContractPage(props: &Props) -> Html {
                     payment_debts,
                     attachments,
                 );
-                let fetched_pods: Vec<String> = Request::get("/api/pods")
+                let fetched_pods: Vec<String> = Request::get("/api/v1/transactions/pods")
                     .send()
                     .await
                     .unwrap()
@@ -199,7 +199,7 @@ pub fn ContractPage(props: &Props) -> Html {
                     .await
                     .unwrap();
                 pods.set(fetched_pods);
-                let fetched_debts: Vec<String> = Request::get("/api/debts")
+                let fetched_debts: Vec<String> = Request::get("/api/v1/transactions/debts")
                     .send()
                     .await
                     .unwrap()
@@ -249,7 +249,7 @@ pub fn ContractPage(props: &Props) -> Html {
                 (*attachments).clone(),
             )];
             wasm_bindgen_futures::spawn_local(async move {
-                let _: Vec<Contract> = Request::put("/api/contracts")
+                let _: Vec<Contract> = Request::put("/api/v1/contracts")
                     .json(&contracts)
                     .unwrap()
                     .send()
@@ -405,7 +405,7 @@ pub fn ContractPage(props: &Props) -> Html {
                     <td colspan="2">
                         <RemoteFileInput<Attachment>
                             bind_handle={attachments}
-                            endpoint="/api/attachments"
+                            endpoint="/api/v1/attachments"
                         />
                     </td>
                 </tr>

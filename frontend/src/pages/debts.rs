@@ -16,7 +16,7 @@ pub fn Debts() -> Html {
     let day = 0;
     let len = 13;
     let query = format!(
-        "/api/history/debts?year={}&month={}&day={}&len={}",
+        "/api/v1/history/debts?year={}&month={}&day={}&len={}",
         year, month, day, len
     );
 

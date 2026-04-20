@@ -11,7 +11,7 @@ use yew_router::prelude::*;
 #[function_component]
 pub fn Contracts() -> Html {
     let contracts: UseStateHandle<Resource<Contract>> =
-        use_state(|| Resource::new("/api/contracts".into(), "contracts".into(), Vec::default()));
+        use_state(|| Resource::new("/api/v1/contracts".into(), "contracts".into(), Vec::default()));
     {
         let contracts = contracts.clone();
         use_effect_with((), move |_| {

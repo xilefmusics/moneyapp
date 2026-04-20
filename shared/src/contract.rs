@@ -90,13 +90,3 @@ pub struct Contract {
     pub attachments: Vec<String>,
 }
 
-#[cfg(feature = "backend")]
-impl fancy_surreal::Databasable for Contract {
-    fn get_id(&self) -> Option<String> {
-        self.id.clone()
-    }
-
-    fn set_id(&mut self, id: Option<String>) {
-        self.id = id;
-    }
-}

@@ -20,7 +20,7 @@ pub struct Query {
 impl Query {
     pub fn api_url(&self, t: &str) -> String {
         let base = Url::parse("https://example.net").unwrap();
-        let mut url = Url::parse(&format!("https://example.net/api/history/{}", t)).unwrap();
+        let mut url = Url::parse(&format!("https://example.net/api/v1/history/{}", t)).unwrap();
         {
             let mut query_pairs = url.query_pairs_mut();
             query_pairs.append_pair(

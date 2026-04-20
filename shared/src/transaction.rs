@@ -2,6 +2,7 @@ use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+#[cfg_attr(feature = "backend", derive(utoipa::ToSchema))]
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum Type {
@@ -11,6 +12,7 @@ pub enum Type {
     Move,
 }
 
+#[cfg_attr(feature = "backend", derive(utoipa::ToSchema))]
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Transaction {
     pub id: Option<String>,
@@ -113,17 +115,7 @@ impl Transaction {
     }
 }
 
-#[cfg(feature = "backend")]
-impl fancy_surreal::Databasable for Transaction {
-    fn get_id(&self) -> Option<String> {
-        self.id.clone()
-    }
-
-    fn set_id(&mut self, id: Option<String>) {
-        self.id = id;
-    }
-}
-
+#[cfg_attr(feature = "backend", derive(utoipa::ToSchema))]
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct AssociatedTypeValues {
     pub date: DateTime<Local>,

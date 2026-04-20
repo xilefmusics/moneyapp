@@ -20,13 +20,3 @@ pub struct Goal {
     pub data: GoalData,
 }
 
-#[cfg(feature = "backend")]
-impl fancy_surreal::Databasable for Goal {
-    fn get_id(&self) -> Option<String> {
-        self.id.clone()
-    }
-
-    fn set_id(&mut self, id: Option<String>) {
-        self.id = id;
-    }
-}

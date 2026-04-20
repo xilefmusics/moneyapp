@@ -28,7 +28,7 @@ pub struct Query {
 impl Query {
     pub fn api_url(&self) -> String {
         let base = Url::parse("https://example.net").unwrap();
-        let mut url = Url::parse("https://example.net/api/transactions").unwrap();
+        let mut url = Url::parse("https://example.net/api/v1/transactions").unwrap();
         {
             let mut query_pairs = url.query_pairs_mut();
             query_pairs.append_pair(
@@ -117,7 +117,7 @@ pub fn Transactions() -> Html {
             let transactions = transactions.clone();
             wasm_bindgen_futures::spawn_local(
                 async move {
-                    FileUploader::upload::<Vec<Transaction>>("/api/import", &files[0]).await;
+                    FileUploader::upload::<Vec<Transaction>>("/api/v1/import", &files[0]).await;
                     Resource::reload(transactions);
                 },
             );

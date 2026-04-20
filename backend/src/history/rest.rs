@@ -1,58 +1,73 @@
 use super::{History, QueryParams};
 
 use crate::error::AppError;
-use crate::rest::parse_user_header;
+use crate::resources::User;
 
-use fancy_surreal::Client;
+use actix_web::{get, web::Data, web::Query, HttpResponse};
 
-use actix_web::{get, web::Data, web::Query, HttpRequest, HttpResponse};
+use crate::database::Database;
 
-#[get("/api/history/wealth")]
+#[utoipa::path(
+    get,
+    path = "/api/v1/history/wealth",
+    tag = "History",
+    security(("SessionCookie" = []), ("SessionToken" = []))
+)]
+#[get("/wealth")]
 pub async fn get_wealth(
-    req: HttpRequest,
-    db: Data<Client<'_>>,
+    user: actix_web::web::ReqData<User>,
+    db: Data<Database>,
     q: Query<QueryParams>,
 ) -> Result<HttpResponse, AppError> {
-    Ok(HttpResponse::Ok()
-        .json(History::wealth(db.into_inner(), &parse_user_header(&req)?, q.into_inner()).await?))
+    Ok(HttpResponse::Ok().json(
+        History::wealth(db.into_inner(), &user.id, q.into_inner()).await?,
+    ))
 }
 
-#[get("/api/history/pods")]
+#[utoipa::path(get, path = "/api/v1/history/pods", tag = "History", security(("SessionCookie" = []), ("SessionToken" = [])))]
+#[get("/pods")]
 pub async fn get_pods(
-    req: HttpRequest,
-    db: Data<Client<'_>>,
+    user: actix_web::web::ReqData<User>,
+    db: Data<Database>,
     q: Query<QueryParams>,
 ) -> Result<HttpResponse, AppError> {
-    Ok(HttpResponse::Ok()
-        .json(History::pod(db.into_inner(), &parse_user_header(&req)?, q.into_inner()).await?))
+    Ok(HttpResponse::Ok().json(
+        History::pod(db.into_inner(), &user.id, q.into_inner()).await?,
+    ))
 }
 
-#[get("/api/history/budgets")]
+#[utoipa::path(get, path = "/api/v1/history/budgets", tag = "History", security(("SessionCookie" = []), ("SessionToken" = [])))]
+#[get("/budgets")]
 pub async fn get_budgets(
-    req: HttpRequest,
-    db: Data<Client<'_>>,
+    user: actix_web::web::ReqData<User>,
+    db: Data<Database>,
     q: Query<QueryParams>,
 ) -> Result<HttpResponse, AppError> {
-    Ok(HttpResponse::Ok()
-        .json(History::budget(db.into_inner(), &parse_user_header(&req)?, q.into_inner()).await?))
+    Ok(HttpResponse::Ok().json(
+        History::budget(db.into_inner(), &user.id, q.into_inner()).await?,
+    ))
 }
 
-#[get("/api/history/inbudgets")]
+#[utoipa::path(get, path = "/api/v1/history/inbudgets", tag = "History", security(("SessionCookie" = []), ("SessionToken" = [])))]
+#[get("/inbudgets")]
 pub async fn get_inbudgets(
-    req: HttpRequest,
-    db: Data<Client<'_>>,
+    user: actix_web::web::ReqData<User>,
+    db: Data<Database>,
     q: Query<QueryParams>,
 ) -> Result<HttpResponse, AppError> {
-    Ok(HttpResponse::Ok()
-        .json(History::inbudget(db.into_inner(), &parse_user_header(&req)?, q.into_inner()).await?))
+    Ok(HttpResponse::Ok().json(
+        History::inbudget(db.into_inner(), &user.id, q.into_inner()).await?,
+    ))
 }
 
-#[get("/api/history/debts")]
+#[utoipa::path(get, path = "/api/v1/history/debts", tag = "History", security(("SessionCookie" = []), ("SessionToken" = [])))]
+#[get("/debts")]
 pub async fn get_debts(
-    req: HttpRequest,
-    db: Data<Client<'_>>,
+    user: actix_web::web::ReqData<User>,
+    db: Data<Database>,
     q: Query<QueryParams>,
 ) -> Result<HttpResponse, AppError> {
-    Ok(HttpResponse::Ok()
-        .json(History::debt(db.into_inner(), &parse_user_header(&req)?, q.into_inner()).await?))
+    Ok(HttpResponse::Ok().json(
+        History::debt(db.into_inner(), &user.id, q.into_inner()).await?,
+    ))
 }

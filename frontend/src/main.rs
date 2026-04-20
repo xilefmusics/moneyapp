@@ -38,6 +38,8 @@ pub enum Route {
     #[not_found]
     #[at("/404")]
     NotFound,
+    #[at("/login")]
+    Login,
 }
 
 impl Route {}
@@ -127,6 +129,13 @@ impl Navable for Route {
                     Route::Goal{id} => html! { <Goal id={id} /> },
                     Route::Goals => html! { <Goals /> },
                     Route::NotFound => html! { <h1>{ "404 Not Found" }</h1> },
+                    Route::Login => html! {
+                        <div style="padding: 2rem; max-width: 32rem;">
+                            <h1>{ "Sign in" }</h1>
+                            <p>{ "Use the same origin as this app. Session cookie is set after OAuth completes." }</p>
+                            <p><a href="/auth/login">{ "Continue with Google (OIDC)" }</a></p>
+                        </div>
+                    },
         }}
             </HorizontalLayout<Route>>
         }

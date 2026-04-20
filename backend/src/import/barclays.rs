@@ -1,5 +1,5 @@
 use crate::error::AppError;
-use crate::transaction::{Transaction, Type as TType};
+use money_app_shared::transaction::{Transaction, Type as TType};
 
 use std::collections::HashMap;
 

@@ -29,13 +29,3 @@ impl fmt::Display for Attachment {
     }
 }
 
-#[cfg(feature = "backend")]
-impl fancy_surreal::Databasable for Attachment {
-    fn get_id(&self) -> Option<String> {
-        self.id.clone()
-    }
-
-    fn set_id(&mut self, id: Option<String>) {
-        self.id = id;
-    }
-}

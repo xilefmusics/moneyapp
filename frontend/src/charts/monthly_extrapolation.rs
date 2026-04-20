@@ -12,7 +12,7 @@ pub fn MonthlyExtrapolation() -> Html {
         use_effect_with((), move |_| {
             let extrapolation = extrapolation.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let fetched_extrapolation: Extrapolation = Request::get("/api/extrapolation")
+                let fetched_extrapolation: Extrapolation = Request::get("/api/v1/extrapolation")
                     .send()
                     .await
                     .unwrap()

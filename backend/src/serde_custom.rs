@@ -12,7 +12,7 @@ pub mod yyyy_mm_dd_option {
         }
         let s = s.unwrap();
 
-        let mut iter = s.split("-");
+        let mut iter = s.split('-');
 
         let year = iter.next();
         if year.is_none() {
@@ -59,7 +59,7 @@ pub mod dd_mm_yyyy_option {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        if s.len() == 0 {
+        if s.is_empty() {
             return Ok(None);
         }
         let s = format!("{} 0:0:0", s);
@@ -97,8 +97,8 @@ pub mod amount {
     }
 
     fn handle_comma_dot(s: &str) -> String {
-        if let Some(_) = s.find(",") {
-            s.to_string().replace(".", "").replace(",", ".")
+        if s.contains(',') {
+            s.to_string().replace('.', "").replace(',', ".")
         } else {
             s.to_string()
         }
@@ -109,7 +109,7 @@ pub mod amount {
         D: Deserializer<'de>,
     {
         let s = handle_comma_dot(trim(&String::deserialize(deserializer)?));
-        let mut iter = s.split(".");
+        let mut iter = s.split('.');
         let before = iter.next().unwrap().parse::<i64>().unwrap();
         let after_str = iter.next().unwrap_or("0");
         let after_mul = if !after_str.starts_with('0') && after_str.len() == 1 {

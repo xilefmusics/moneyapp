@@ -148,7 +148,7 @@ pub fn TransactionPage(props: &Props) -> Html {
         let debts = debts.clone();
         let tags = tags.clone();
         let attachments = attachments.clone();
-        let query = format!("/api/transactions/{}", props.id);
+        let query = format!("/api/v1/transactions/{}", props.id);
         use_effect_with((), move |_| {
             wasm_bindgen_futures::spawn_local(async move {
                 let fetched_transaction: Transaction = Request::get(&query)
@@ -172,7 +172,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                     tags,
                     attachments,
                 );
-                let fetched_pod_types: Vec<String> = Request::get("/api/pods")
+                let fetched_pod_types: Vec<String> = Request::get("/api/v1/transactions/pods")
                     .send()
                     .await
                     .unwrap()
@@ -180,7 +180,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                     .await
                     .unwrap();
                 pod_types.set(fetched_pod_types);
-                let fetched_budget_types: Vec<String> = Request::get("/api/budgets")
+                let fetched_budget_types: Vec<String> = Request::get("/api/v1/transactions/budgets")
                     .send()
                     .await
                     .unwrap()
@@ -188,7 +188,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                     .await
                     .unwrap();
                 budget_types.set(fetched_budget_types);
-                let fetched_inbudget_types: Vec<String> = Request::get("/api/inbudgets")
+                let fetched_inbudget_types: Vec<String> = Request::get("/api/v1/transactions/inbudgets")
                     .send()
                     .await
                     .unwrap()
@@ -205,7 +205,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                     .unwrap();
                 debt_types.set(fetched_debt_types);
                 // TODO: fix
-                // let fetched_tag_types: Vec<String> = Request::get("/api/tags")
+                // let fetched_tag_types: Vec<String> = Request::get("/api/v1/transactions/tags")
                 //     .send()
                 //     .await
                 //     .unwrap()
@@ -245,7 +245,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                 (*attachments).clone(),
             )];
             wasm_bindgen_futures::spawn_local(async move {
-                let _: Vec<Transaction> = Request::put("/api/transactions")
+                let _: Vec<Transaction> = Request::put("/api/v1/transactions")
                     .json(&transactions)
                     .unwrap()
                     .send()
@@ -401,7 +401,7 @@ pub fn TransactionPage(props: &Props) -> Html {
                     <td colspan="2">
                         <RemoteFileInput<Attachment>
                             bind_handle={attachments}
-                            endpoint="/api/attachments"
+                            endpoint="/api/v1/attachments"
                         />
                     </td>
                 </tr>

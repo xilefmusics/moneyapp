@@ -1,5 +1,5 @@
 use crate::error::AppError;
-use crate::transaction::Transaction;
+use money_app_shared::transaction::Transaction;
 
 use super::{Barclays, N26new, N26};
 

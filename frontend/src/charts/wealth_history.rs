@@ -18,7 +18,7 @@ pub fn WealthHistory(props: &Props) -> Html {
     {
         let data = data.clone();
         let query = format!(
-            "/api/history/wealth?year={}&month={}&day={}&len={}",
+            "/api/v1/history/wealth?year={}&month={}&day={}&len={}",
             props.year, props.month, props.day, props.len
         );
         use_effect_with((), move |_| {
